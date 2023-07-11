@@ -21,6 +21,7 @@ public class BmobChatAi: WebSocketDelegate {
     
     var isConnected = false
     
+    var prompt:[String:Any]?
   
     
     public func connect(_ to:String = "",SecretKey:String) {
@@ -36,7 +37,7 @@ public class BmobChatAi: WebSocketDelegate {
             
             var request = URLRequest(url: url);
             let pinner = FoundationSecurity(allowSelfSigned: true) // don't validate SSL certificates
-            request.timeoutInterval = 5
+            request.timeoutInterval = 15
             socket = WebSocket(request: request, certPinner: pinner)
             
             socket?.delegate = self
@@ -48,13 +49,42 @@ public class BmobChatAi: WebSocketDelegate {
             onError?(WebSocketError.invalidURL)
         }
     }
+    public func setPrompt(message: String!) {
+        prompt = ["content": message, "role": "system"]
+    }
     public func send(message: String) {
         guard let socket = socket else {
             onError?(WebSocketError.socketNotConnected)
             return
         }
-        print(message)
-        socket.write(string: message)
+        var messages = message
+        
+        if prompt != nil {
+            // 将字符串解析为 JSON 对象
+            if let data = message.data(using: .utf8),
+               var json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                
+                // 获取 messages 数组
+                var messagesArray = json["messages"] as? [[String: Any]] ?? []
+                
+                // 将新元素插入到数组的第一个位置
+                messagesArray.insert(prompt!, at: 0)
+                
+                // 更新 JSON 对象中的 messages 数组
+                json["messages"] = messagesArray
+                
+                // 将 JSON 对象转换为字符串
+                if let jsonData = try? JSONSerialization.data(withJSONObject: json, options: []),
+                   let jsonString = String(data: jsonData, encoding: .utf8) {
+                    messages = jsonString
+                }
+            }
+        }
+
+        
+        
+        print("发送消息\(messages)")
+        socket.write(string: messages)
     }
     
     public func disconnect() {
@@ -131,7 +161,7 @@ public class BmobChatAi: WebSocketDelegate {
         case .cancelled:
             isConnected = false
         case .error(let error):
-            print("got an error: \(error)")
+           
             isConnected = false
             handleError(error)
             onError?(WebSocketError.socketNotConnected)

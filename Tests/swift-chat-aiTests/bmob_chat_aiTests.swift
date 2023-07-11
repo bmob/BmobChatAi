@@ -50,6 +50,7 @@ final class swift_chat_aiTests: XCTestCase {
 //            expectation.fulfill()
         }
         
+//        bmobChatAi.setPrompt(message: "用女性的形象回应")
         
         // 异步操作
         DispatchQueue.global().async {
@@ -60,6 +61,7 @@ final class swift_chat_aiTests: XCTestCase {
             // 在这里编写需要延时执行的代码块
 //            bmobChatAi.send(message: "ping")
 //            let data = {"messages":[{"content":"hi","role":"user"}],"session":"b1"}
+            
             let dictionary: [String: Any] = [
               "messages": [
                 [
