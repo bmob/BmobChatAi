@@ -1,2 +1,3 @@
-# swift-chat-ai
-bmob-chat-ai  Bmob后端云chat AI sdk。
+# chatgpt-bmob1
+
+A description of this package.
