@@ -1,6 +1,6 @@
 import XCTest
 import Starscream
-@testable import swift_chat_ai
+@testable import BmobChatAi
  
 var bmobChatAi = BmobChatAi()
 

@@ -50,7 +50,7 @@ public class BmobChatAi: WebSocketDelegate {
         }
     }
     public func setPrompt(message: String!) {
-        prompt = ["content": message, "role": "system"]
+        prompt = ["content": message!, "role": "system"]
     }
     public func send(message: String) {
         guard let socket = socket else {
