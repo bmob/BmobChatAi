@@ -12,7 +12,7 @@
 
 ```
 dependencies: [
-    .package(url: "https://github.com/bmob/swift-chat-ai", from: "1.0.0")
+    .package(url: "https://github.com/bmob/BmobChatAi", from: "1.0.0")
 ]
 ```
 
@@ -32,10 +32,12 @@ import BmobChatAi
 
 ```
 // 实例化AI类
-let chatAI = BmobChatAi()
+let chatAI = BmobChatAi(SecretKey: "xxxxx")
 
+// 连接AI
+chatAI.connect()
 //连接websock 域名参数可不传
-chatAI.connect("https://api.bmobcloud.com",SecretKey: "fda2aa4220549f74")
+chatAI.connect("https://api.xxxxx.com")
 
 // 发送一条消息给 chatgpt ai
 let dictionary: [String: Any] = [
@@ -59,6 +61,15 @@ let dictionary: [String: Any] = [
 chatAI.onReceiveMessage = { message in
 		print("收到的消息：\(message)")
 }
+```
+
+## 错误处理
+```
+        chatAI.onError = { error in
+            // 处理 WebSocket 连接中的错误
+            print("WebSocket \(error) 连接出现错误：\(error.localizedDescription)")
+            self.chatAI.connect()
+        }
 ```
 
 ## Send方法内容说明
